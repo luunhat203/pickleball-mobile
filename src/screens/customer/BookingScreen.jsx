@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from "@expo/vector-icons";
-import Tab from "../components/specific/booking/Tab";
+import Tab from "../../components/specific/booking/Tab";
 
 const BookingScreen = () => {
   const [tab, setTab] = useState("bookings"); // 'bookings' | 'history'

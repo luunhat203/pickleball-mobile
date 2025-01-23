@@ -44,6 +44,10 @@ const LocationScreen = () => {
     navigation.navigate("LocationPicker", {title: "Chọn điểm đi"})
   }
 
+  const handleCarSchedule = () => {
+    navigation.navigate("CarScheduleScreen")
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -123,7 +127,7 @@ const LocationScreen = () => {
         </ActionSheet>
 
         {/* Search Button */}
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.searchButton} onPress={handleCarSchedule}>
           <Text style={styles.searchButtonText}>Tìm kiếm</Text>
         </TouchableOpacity>
       </View>

@@ -3,12 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../screens/HomeScreen";
-import BookingScreen from "../screens/BookingScreen";
+import HomeScreen from "../screens/customer/HomeScreen";
+import BookingScreen from "../screens/customer/BookingScreen";
 import { Badge } from "react-native-paper";
-import HistoryScreen from "../screens/HistoryScreen";
-import NotificationScreen from "../screens/NotificationScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import HistoryScreen from "../screens/customer/HistoryScreen";
+import NotificationScreen from "../screens/customer/NotificationScreen";
+import ProfileScreen from "../screens/customer/ProfileScreen";
 const Tab = createBottomTabNavigator();
 
 const NavigationTab = () => {

@@ -3,11 +3,11 @@ import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import Logo from "../components/common/Logo";
-import SearchBar from "../components/common/SearchBar";
-import TransportOptions from "../components/common/TransportOptions";
-import PopularDestinations from "../components/specific/home/PopularDestinations";
-import Banner from "../components/specific/home/Banner";
+import Logo from "../../components/common/Logo";
+import SearchBar from "../../components/common/SearchBar";
+import TransportOptions from "../../components/common/TransportOptions";
+import PopularDestinations from "../../components/specific/home/PopularDestinations";
+import Banner from "../../components/specific/home/Banner";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Icon } from "react-native-paper";
 
