@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 
 const HistoryScreen = ({route}) => {
   // const [tab, setTab] = useState('tickets'); // 'tickets' | 'orders'
-  const tab = route.params.tab;
+  const tab = route.params.tabSelected;
   
   // Dữ liệu giả cho Tickets
   const ticketsHistory = [
