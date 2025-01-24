@@ -11,16 +11,29 @@ import CarScheduleScreen from "../screens/customer/CarScheduleScreen";
 import SeatSelectionScreen from "../screens/customer/SeatSelectionScreen";
 import BookingConfirmScreen from "../screens/customer/BookingConfirmScreen";
 import PaymentScreen from "../screens/customer/PaymentScreen";
+import DriverHomeScreen from "../screens/driver/DriverHomeScreen";
+import LoginForm from "../screens/customer/LoginForm";
+import LoginScreen from "../screens/LoginScreen";
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const navigation = useNavigation();
   return (
-    <Stack.Navigator initialRouteName="MainTabs">
+    <Stack.Navigator initialRouteName="Login">
+     <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="MainTabs"
         component={NavigationTab}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LoginForm"
+        component={LoginForm}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -140,6 +153,11 @@ const AppNavigator = () => {
           headerTintColor: "#fff",
           headerTitle: "Chọn địa điểm",
         }}
+      />
+       <Stack.Screen
+        name="DriverHomeScreen"
+        component={DriverHomeScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
