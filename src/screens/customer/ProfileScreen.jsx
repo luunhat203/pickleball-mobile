@@ -20,7 +20,7 @@ const ProfileScreen = () => {
   };
 
   const menuItems = [
-    { id: "info", title: "Thông tin Hải Vân", icon: "info", color: "#4A90E2" },
+    { id: "info", title: "Thông tin Sao Việt", icon: "info", color: "#4A90E2" },
     { id: "support", title: "Hỗ trợ", icon: "help", color: "#50E3C2" },
     { id: "settings", title: "Cài đặt", icon: "settings", color: "#F5A623" },
     { id: "logout", title: "Đăng xuất", icon: "logout", color: "#FF5B5B" },
@@ -89,7 +89,7 @@ const ProfileScreen = () => {
                 <MaterialIcons name="notifications" size={24} color="#FFF" />
               }
               title="Tin tức"
-              value="Hải Vân"
+              value="Sao Việt"
               color="#50E3C2"
             />
           </View>

@@ -36,10 +36,10 @@ const BookingConfirmScreen = () => {
 
         {/* Location Selection */}
         <TouchableOpacity style={styles.locationSelector}>
-          <Text style={styles.locationText}>Mỹ Đình - Sơn La</Text>
+          <Text style={styles.locationText}>Hà Nội - Lào Cai</Text>
           <Text style={styles.locationSubText}>Luxury</Text>
           <View style={styles.locationRight}>
-            <Text style={styles.dateText}>Hải Vân</Text>
+            <Text style={styles.dateText}>Sao Việt</Text>
             <Text style={styles.dateSubText}>20/01/2025</Text>
           </View>
           <AntDesign name="down" size={24} color="black" />
