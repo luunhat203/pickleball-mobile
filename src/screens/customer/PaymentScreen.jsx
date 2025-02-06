@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const PaymentScreen = () => {
+  const navigation = useNavigation();
   const [selectedMethod, setSelectedMethod] = useState(null);
 
   const paymentMethods = [
@@ -57,6 +59,10 @@ const PaymentScreen = () => {
       )}
     </View>
   );
+
+  const submitPayment = () => {
+    navigation.replace("BookingSuccessScreen");
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -134,6 +140,7 @@ const PaymentScreen = () => {
             !selectedMethod && styles.paymentButtonDisabled
           ]}
           disabled={!selectedMethod}
+          onPress={submitPayment}
         >
           <Text style={styles.paymentButtonText}>Thanh toán</Text>
         </TouchableOpacity>

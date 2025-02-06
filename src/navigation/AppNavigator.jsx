@@ -1,166 +1,144 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {TouchableOpacity} from "react-native";
+import {createStackNavigator} from "@react-navigation/stack";
+import {useNavigation} from "@react-navigation/native";
+import {FontAwesome5} from "@expo/vector-icons";
+
+// Screens
 import NavigationTab from "./NavigationTab";
+import LoginScreen from "../screens/LoginScreen";
 import HistoryScreen from "../screens/customer/HistoryScreen";
-import { FontAwesome5 } from "@expo/vector-icons";
 import LocationScreen from "../screens/customer/LocationScreen";
-import LocationPicker from "../components/specific/locationScr/LocationPicker";
-import { TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import CarScheduleScreen from "../screens/customer/CarScheduleScreen";
 import SeatSelectionScreen from "../screens/customer/SeatSelectionScreen";
 import BookingConfirmScreen from "../screens/customer/BookingConfirmScreen";
 import PaymentScreen from "../screens/customer/PaymentScreen";
 import DriverHomeScreen from "../screens/driver/DriverHomeScreen";
-import LoginForm from "../screens/customer/LoginForm";
-import LoginScreen from "../screens/LoginScreen";
+import LocationPicker from "../components/specific/locationScr/LocationPicker";
+import BookingSuccessScreen from "../screens/customer/BookingSuccessScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 
 const Stack = createStackNavigator();
 
+// Constants
+const HEADER_STYLE = {
+    backgroundColor: "#FFA07A",
+};
+
+const HEADER_TINT_COLOR = "#fff";
+
+// Common header options
+const getCommonHeaderOptions = (title) => ({
+    headerBackTitle: title === "Hoàn thành" ? null : " Quay lại",
+    headerBackImage: () => (
+        <FontAwesome5 name="chevron-left" size={16} color={HEADER_TINT_COLOR}/>
+    ),
+    headerStyle: HEADER_STYLE,
+    headerTintColor: HEADER_TINT_COLOR,
+    headerTitle: title,
+});
+
+// Screen configurations
+const SCREEN_CONFIGS = [
+    {
+        name: "Login",
+        component: LoginScreen,
+        options: {headerShown: false},
+    },
+    {
+        name: "MainTabs",
+        component: NavigationTab,
+        options: {headerShown: false},
+    },
+    {
+        name: "HistoryTab",
+        component: HistoryScreen,
+        options: getCommonHeaderOptions("Lịch sử"),
+    },
+    {
+        name: "LocationScreen",
+        component: LocationScreen,
+        options: getCommonHeaderOptions("Xe khách"),
+    },
+    {
+        name: "SeatSelectionScreen",
+        component: SeatSelectionScreen,
+        options: getCommonHeaderOptions("Chọn chỗ"),
+    },
+    {
+        name: "CarScheduleScreen",
+        component: CarScheduleScreen,
+        options: getCommonHeaderOptions("Danh sách chuyến"),
+    },
+    {
+        name: "PaymentScreen",
+        component: PaymentScreen,
+        options: getCommonHeaderOptions("Thanh toán"),
+    },
+    {
+        name: "BookingConfirmScreen",
+        component: BookingConfirmScreen,
+        options: getCommonHeaderOptions("Xác nhận thông tin"),
+    },
+    {
+        name: "DriverHomeScreen",
+        component: DriverHomeScreen,
+        options: {headerShown: false},
+    },
+    {
+        name: "BookingSuccessScreen",
+        component: BookingSuccessScreen,
+        options: {
+            ...getCommonHeaderOptions("Hoàn thành"),
+            headerLeft: () => null,
+        }
+    }
+];
+
 const AppNavigator = () => {
-  const navigation = useNavigation();
-  return (
-    <Stack.Navigator initialRouteName="Login">
-     <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="MainTabs"
-        component={NavigationTab}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="LoginForm"
-        component={LoginForm}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="HistoryTab"
-        component={HistoryScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Lịch sử",
-        }}
-      />
-      <Stack.Screen
-        name="LocationScreen"
-        component={LocationScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Xe khách",
-        }}
-      />
-      <Stack.Screen
-        name="SeatSelectionScreen"
-        component={SeatSelectionScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Chọn chỗ",
-        }}
-      />
-      <Stack.Screen
-        name="CarScheduleScreen"
-        component={CarScheduleScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Danh sách chuyến",
-        }}
-      />
-      <Stack.Screen
-        name="PaymentScreen"
-        component={PaymentScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Thanh toán",
-        }}
-      />
-      <Stack.Screen
-        name="BookingConfirmScreen"
-        component={BookingConfirmScreen}
-        options={{
-          headerBackTitle: " Quay lại",
-          headerBackImage: () => (
-            <FontAwesome5 name="chevron-left" size={16} color="#fff" />
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Xác nhận thông tin",
-        }}
-      />
-      <Stack.Screen
-        name="LocationPicker"
-        component={LocationPicker}
-        options={{
-          headerBackTitleStyle: "",
-          headerBackTitle: "",
-          headerBackImage: () => null, // Xóa nút back mặc định
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <FontAwesome5
-                name="times"
-                size={20}
-                color="#fff"
-                style={{ marginRight: 15 }}
-              />
+    const navigation = useNavigation();
+
+    const locationPickerOptions = {
+        headerBackTitleStyle: "",
+        headerBackTitle: "",
+        headerBackImage: () => null,
+        headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+                <FontAwesome5
+                    name="times"
+                    size={20}
+                    color={HEADER_TINT_COLOR}
+                    style={{marginRight: 15}}
+                />
             </TouchableOpacity>
-          ),
-          headerStyle: {
-            backgroundColor: "#FFA07A",
-          },
-          headerTintColor: "#fff",
-          headerTitle: "Chọn địa điểm",
-        }}
-      />
-       <Stack.Screen
-        name="DriverHomeScreen"
-        component={DriverHomeScreen}
-        options={{ headerShown: false }}
-      />
-    </Stack.Navigator>
-  );
+        ),
+        headerStyle: HEADER_STYLE,
+        headerTintColor: HEADER_TINT_COLOR,
+        headerTitle: "Chọn địa điểm",
+    };
+
+    return (
+        <Stack.Navigator initialRouteName="Login">
+            {SCREEN_CONFIGS.map(({name, component, options}) => (
+                <Stack.Screen
+                    key={name}
+                    name={name}
+                    component={component}
+                    options={options}
+                />
+            ))}
+            <Stack.Screen
+                name="RegisterScreen"
+                component={RegisterScreen}
+                options= {{headerShown: false}}
+            />
+            <Stack.Screen
+                name="LocationPicker"
+                component={LocationPicker}
+                options={locationPickerOptions}
+            />
+        </Stack.Navigator>
+    );
 };
 
 export default AppNavigator;

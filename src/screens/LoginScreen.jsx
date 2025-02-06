@@ -10,31 +10,33 @@ import {
   Animated,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient"; // Thêm import này từ expo-linear-gradient
+import RoleType from "../enums/RoleType";
+import {MESSAGE, SUCCESS, FAIL, ERROR} from "../enums/Message";
 
 const mockUsers = [
-  { email: "khachhang", password: "123456", role: "customer" },
-  { email: "laixe", password: "123456", role: "driver" },
+  { username: "khachhang", password: "1", role: 1 },
+  { username: "laixe", password: "1", role: 2 },
 ];
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const buttonScale = new Animated.Value(1); // For scaling animation
 
   const handleLogin = () => {
     const user = mockUsers.find(
-      (u) => u.email === email && u.password === password
+      (u) => u.username === username && u.password === password
     );
 
     if (user) {
-      if (user.role === "customer") {
+      if (user.role === RoleType.KHACH_HANG) {
         navigation.replace("MainTabs");
-      } else if (user.role === "driver") {
+      } else if (user.role === RoleType.LAI_XE) {
         navigation.replace("DriverHomeScreen");
       }
     } else {
-      Alert.alert("Login Failed", "Incorrect email or password.");
+      Alert.alert(MESSAGE.FAIL, FAIL.LOGIN_FAIL);
     }
   };
 
@@ -65,13 +67,11 @@ const LoginScreen = ({ navigation }) => {
         style={styles.logo}
       />
 
-      {/* Email Input */}
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        placeholder="Tên đăng nhập"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
         placeholderTextColor="#aaa"
       />
@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
       {/* Password Input */}
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder="Mật khẩu"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -102,9 +102,9 @@ const LoginScreen = ({ navigation }) => {
 
       {/* Footer Links */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account? </Text>
-        <TouchableOpacity>
-          <Text style={styles.footerLink}>Sign Up</Text>
+        <Text style={styles.footerText}>Chưa có tài khoản ? </Text>
+        <TouchableOpacity onPress={() => navigation.replace("RegisterScreen")}>
+          <Text style={styles.footerLink}>Đăng ký</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -125,18 +125,13 @@ const styles = StyleSheet.create({
     width: 270,
     height: 90,
     marginBottom: 40,
-    shadowColor: "#FF4C4C", // Thêm bóng đổ đỏ cho logo
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 10,
-    borderRadius: 15,
   },
   input: {
     width: "100%",
     height: 55,
     borderColor: "#FF4C4C",
     borderWidth: 1.5,
-    borderRadius: 12,
+    borderRadius: 20,
     paddingHorizontal: 18,
     backgroundColor: "#fff",
     marginBottom: 18,
