@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {TouchableOpacity} from "react-native";
 import {createStackNavigator} from "@react-navigation/stack";
 import {useNavigation} from "@react-navigation/native";
@@ -17,6 +17,8 @@ import DriverHomeScreen from "../screens/driver/DriverHomeScreen";
 import LocationPicker from "../components/specific/locationScr/LocationPicker";
 import BookingSuccessScreen from "../screens/customer/BookingSuccessScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import EditProfile from "../screens/customer/DetailProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -86,6 +88,11 @@ const SCREEN_CONFIGS = [
         options: {headerShown: false},
     },
     {
+        name: "EditProfileScreen",
+        component: EditProfile,
+        options: getCommonHeaderOptions("Thông tin cá nhân")
+    },
+    {
         name: "BookingSuccessScreen",
         component: BookingSuccessScreen,
         options: {
@@ -97,6 +104,20 @@ const SCREEN_CONFIGS = [
 
 const AppNavigator = () => {
     const navigation = useNavigation();
+
+    useEffect(() => {
+        const loadToken = async () => {
+            try{
+                const token = await AsyncStorage.getItem("token");
+                if(!token){
+                    navigation.replace("Login");
+                }
+            }catch (e) {
+                console.log(e)
+            }
+        }
+        loadToken();
+    }, []);
 
     const locationPickerOptions = {
         headerBackTitleStyle: "",
