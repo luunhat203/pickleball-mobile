@@ -12,3 +12,13 @@ export const UserRole = {
   CUSTOMER: 4,
 };
 
+export const LoaiBenXe = [
+  {code: "MY_DINH_STATION_HN", name: "Bến xe Mỹ Đình"},
+  {code: "LAO_CAI_STATION_LC", name: "Bến xe trung tâm Lào Cai"},
+  {code: "SAPA_STATION_LC", name: "Bến xe Sa Pa"}
+]
+
+export const TYPE_BUS = [
+  {code: "BUS34", name: "Luxury"},
+  {code: "BUS20", name: "Royal"}
+]

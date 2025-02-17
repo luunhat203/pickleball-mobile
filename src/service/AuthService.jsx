@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import apiConfig from "../api/apiConfig";
+import apiConfig from "../api/ApiConfig";
 import {jwtDecode} from "jwt-decode";
 
 const AuthService = {

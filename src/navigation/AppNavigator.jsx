@@ -14,11 +14,11 @@ import SeatSelectionScreen from "../screens/customer/SeatSelectionScreen";
 import BookingConfirmScreen from "../screens/customer/BookingConfirmScreen";
 import PaymentScreen from "../screens/customer/PaymentScreen";
 import DriverHomeScreen from "../screens/driver/DriverHomeScreen";
-import LocationPicker from "../components/specific/locationScr/LocationPicker";
 import BookingSuccessScreen from "../screens/customer/BookingSuccessScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditProfile from "../screens/customer/DetailProfileScreen";
+import DetailProfileScreen from "../screens/customer/DetailProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -152,11 +152,6 @@ const AppNavigator = () => {
                 name="RegisterScreen"
                 component={RegisterScreen}
                 options= {{headerShown: false}}
-            />
-            <Stack.Screen
-                name="LocationPicker"
-                component={LocationPicker}
-                options={locationPickerOptions}
             />
         </Stack.Navigator>
     );

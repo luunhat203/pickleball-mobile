@@ -1,26 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import {MaterialIcons, MaterialCommunityIcons} from '@expo/vector-icons';
+import authService from "../../service/AuthService";
+import {showCustomToast} from "../../components/common/notifice/CustomToast";
 
-const EditProfile = () => {
+const EditProfile = ({navigation}) => {
+    const [userInfo, setUserInfo] = useState({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res_data = await authService.getUser();
+                setUserInfo(res_data.data);
+            } catch (e) {
+                showCustomToast(e.message, "error");
+            }
+        }
+        fetchData();
+    }, []);
+
+    console.log(userInfo)
+
+
     return (
         <ScrollView style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <MaterialIcons name="chevron-left" size={24} color="#000" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Thông tin cá nhân</Text>
-                <View style={{ width: 24 }} />
-            </View>
-
             {/* Profile Section */}
             <View style={styles.profileSection}>
                 <View style={styles.avatar}>
-                    <MaterialIcons name="person" size={40} color="#6B7280" />
+                    <MaterialIcons name="person" size={40} color="#6B7280"/>
                 </View>
-                <Text style={styles.name}>Lưu Phúc Ân</Text>
-                <Text style={styles.phone}>0398653926</Text>
+                <Text style={styles.name}>{userInfo.fullname}</Text>
+                <Text style={styles.phone}>{userInfo.phone}</Text>
             </View>
 
             {/* Personal Information Section */}
@@ -34,37 +44,22 @@ const EditProfile = () => {
 
                 <View style={styles.infoList}>
                     <InfoItem
-                        icon={<MaterialIcons name="calendar-today" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="calendar-today" size={20} color="#6B7280"/>}
                         label="Ngày sinh"
-                        value="08/11/2022"
+                        value={userInfo.dateOfBirth}
                     />
                     <InfoItem
-                        icon={<MaterialIcons name="location-on" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="location-on" size={20} color="#6B7280"/>}
                         label="Địa chỉ"
-                        value="Hà Nội"
+                        value={userInfo.address}
                     />
                     <InfoItem
-                        icon={<MaterialIcons name="location-city" size={20} color="#6B7280" />}
-                        label="Tỉnh/Thành phố"
-                        value="Hà Nội"
-                    />
-                    <InfoItem
-                        icon={<MaterialIcons name="location-on" size={20} color="#6B7280" />}
-                        label="Quận/Huyện"
-                        value="Quận Cầu Giấy"
-                    />
-                    <InfoItem
-                        icon={<MaterialIcons name="email" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="email" size={20} color="#6B7280"/>}
                         label="Thư điện tử"
-                        value=""
+                        value={userInfo.email}
                     />
                     <InfoItem
-                        icon={<MaterialCommunityIcons name="briefcase" size={20} color="#6B7280" />}
-                        label="Nghề nghiệp"
-                        value="Học sinh/sinh viên"
-                    />
-                    <InfoItem
-                        icon={<MaterialIcons name="directions-bus" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="directions-bus" size={20} color="#6B7280"/>}
                         label="Mục đích đi lại"
                         value="Đi học - Về quê"
                     />
@@ -82,22 +77,22 @@ const EditProfile = () => {
 
                 <View style={styles.infoList}>
                     <InfoItem
-                        icon={<MaterialIcons name="email" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="email" size={20} color="#6B7280"/>}
                         label="Thư điện tử"
                         value=""
                     />
                     <InfoItem
-                        icon={<MaterialCommunityIcons name="office-building" size={20} color="#6B7280" />}
+                        icon={<MaterialCommunityIcons name="office-building" size={20} color="#6B7280"/>}
                         label="Tên công ty"
                         value=""
                     />
                     <InfoItem
-                        icon={<MaterialCommunityIcons name="file-document" size={20} color="#6B7280" />}
+                        icon={<MaterialCommunityIcons name="file-document" size={20} color="#6B7280"/>}
                         label="Mã số thuế"
                         value=""
                     />
                     <InfoItem
-                        icon={<MaterialIcons name="location-on" size={20} color="#6B7280" />}
+                        icon={<MaterialIcons name="location-on" size={20} color="#6B7280"/>}
                         label="Địa chỉ công ty"
                         value=""
                     />
@@ -107,7 +102,7 @@ const EditProfile = () => {
     );
 };
 
-const InfoItem = ({ icon, label, value }) => (
+const InfoItem = ({icon, label, value}) => (
     <View style={styles.infoItem}>
         <View style={styles.iconContainer}>{icon}</View>
         <View style={styles.infoContent}>

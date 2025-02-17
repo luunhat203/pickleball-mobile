@@ -63,7 +63,7 @@ const ProfileScreen = ({navigation}) => {
     };
 
     const menuItems = [
-        {id: "info", title: "Thông tin Sao Việt", icon: "info", color: "#4A90E2", clickBtn: () => {}, loadingBtn: falses},
+        {id: "info", title: "Thông tin Sao Việt", icon: "info", color: "#4A90E2", clickBtn: () => {}, loadingBtn: false},
         {id: "support", title: "Hỗ trợ", icon: "help", color: "#50E3C2", clickBtn: () => {}, loadingBtn: false},
         {id: "settings", title: "Cài đặt", icon: "settings", color: "#F5A623", clickBtn: () => {}, loadingBtn: false},
         {id: "logout", title: "Đăng xuất", icon: "logout", color: "#FF5B5B", clickBtn: () => handleLogOutProfile(), loadingBtn: isLoading},
@@ -89,7 +89,7 @@ const ProfileScreen = ({navigation}) => {
             <ScrollView>
                 {/* User Profile Section */}
                 <View style={styles.profileContainer}>
-                    <TouchableOpacity style={styles.profileSection}>
+                    <TouchableOpacity style={styles.profileSection} onPress={() => navigation.navigate("EditProfileScreen")}>
                         <View style={styles.profileLeft}>
                             <View style={styles.avatarContainer}>
                                 <MaterialIcons
