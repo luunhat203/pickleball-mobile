@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {SEAT_LAYOUT_34} from "../../enums/SeatLayout";
 
 const SeatSelectionScreen = () => {
   const navigation = useNavigation();
@@ -41,7 +42,6 @@ const SeatSelectionScreen = () => {
         style={[
           styles.seat,
           isSelected && styles.selectedSeat,
-          isBooked && styles.bookedSeat,
           isPending && styles.pendingSeat,
         ]}
         onPress={() => !isBooked && toggleSeat(id)}
@@ -67,74 +67,22 @@ const SeatSelectionScreen = () => {
   };
 
   const renderFloorSeats = (floor) => {
-    if (floor === 1) {
-      return (
+    return (
         <View style={styles.seatsContainer}>
-          <View style={styles.column}>
-            {renderSeat('C1-1', '325', 'booked')}
-            {renderSeat('C1-2', '325', 'booked')}
-            {renderSeat('C1-3', '325', 'booked')}
-            {renderSeat('C1-4', '290')}
-            {renderSeat('C1-5', '290')}
-          </View>
-          
-          <View style={styles.column}>
-            {renderSeat('B1-1', '325', 'booked')}
-            {renderSeat('B1-2', '325')}
-            {renderSeat('B1-3', '325')}
-            {renderSeat('B1-4', '290')}
-          </View>
-
-          <View style={styles.column}>
-            {renderSeat('A1-1', '325', 'booked')}
-            {renderSeat('A1-2', '325', 'booked')}
-            {renderSeat('A1-3', '325')}
-            {renderSeat('A1-4', '290')}
-            {renderSeat('A1-5', '290')}
-          </View>
+          {['C', 'B', 'A'].map((row) => (
+              <View key={row} style={styles.column}>
+                {SEAT_LAYOUT_34[floor]
+                    .filter((seat) => seat.id.startsWith(row))
+                    .map((seat) => renderSeat(seat.id, seat.price, seat.status))}
+              </View>
+          ))}
         </View>
-      );
-    } else {
-      return (
-        <View style={styles.seatsContainer}>
-          <View style={styles.column}>
-            {renderSeat('C2-1', '325')}
-            {renderSeat('C2-2', '325')}
-            {renderSeat('C2-3', '325', 'booked')}
-            {renderSeat('C2-4', '290')}
-            {renderSeat('C2-5', '290')}
-          </View>
-          
-          <View style={styles.column}>
-            {renderSeat('B2-1', '325')}
-            {renderSeat('B2-2', '325', 'booked')}
-            {renderSeat('B2-3', '325')}
-            {renderSeat('B2-4', '290')}
-          </View>
-
-          <View style={styles.column}>
-            {renderSeat('A2-1', '325')}
-            {renderSeat('A2-2', '325')}
-            {renderSeat('A2-3', '325', 'booked')}
-            {renderSeat('A2-4', '290')}
-            {renderSeat('A2-5', '290')}
-          </View>
-        </View>
-      );
-    }
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFA07A" barStyle="dark-content" />
-      
-      {/* Header */}
-      {/* <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Icon name="chevron-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chọn chỗ</Text>
-      </View> */}
 
       {/* Progress Indicator */}
       <View style={styles.progressContainer}>

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import CarType from "../../enums/EnumsType";
+import {CarType} from "../../enums/EnumsType";
 import { useNavigation } from "@react-navigation/native";
 import { Alert } from "react-native";
 
@@ -14,7 +14,7 @@ const transportOptions = [
 const TransportOptions = () => {
   const navigation = useNavigation();
   
-  handleOpenLocationChoide = (e) => {
+  const handleOpenLocationChoide = (e) => {
     if(CarType.XE_KHACH === e){
       navigation.navigate("LocationScreen")
     }else{
@@ -44,9 +44,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     elevation: 3,
     padding: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
   },
   transportIcon: {
     fontSize: 32,

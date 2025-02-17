@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import React, {useState, useMemo, useEffect, useRef} from "react";
 import {
   View,
   Text,
@@ -7,185 +7,179 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  StatusBar,
+  FlatList,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import {TYPE_BUS} from "../../enums/EnumsType";
 
-const CarScheduleScreen = () => {
-  const navigation = useNavigation();
-  const schedules = [
-    {
-      company: "Hải Vân",
-      route: "Mỹ Đình - Sơn La",
-      type: "Luxury",
-      seats: 19,
-      departure: {
-        time: "14:00",
-        location: "Bến xe Mỹ Đình",
-      },
-      arrival: {
-        time: "21:00",
-        location: "Hát Lót",
-      },
-      duration: "07h00",
-      originalPrice: 325000,
-      discountPrice: 270000,
-      discount: 17,
-    },
-    {
-      company: "Hải Vân",
-      route: "Mỹ Đình - Bản Phù",
-      type: "Tiết kiệm",
-      seats: 14,
-      departure: {
-        time: "18:30",
-        location: "Bến xe Mỹ Đình",
-      },
-      arrival: {
-        time: "23:40",
-        location: "Hát Lót",
-      },
-      duration: "05h10",
-      originalPrice: 460000,
-      discountPrice: 350000,
-      discount: 24,
-    },
-    {
-      company: "Hải Vân",
-      route: "Mỹ Đình - Mường Chà",
-      type: "Siêu rẻ",
-      seats: 17,
-      departure: {
-        time: "19:00",
-        location: "Bến xe Mỹ Đình",
-      },
-      arrival: {
-        time: "00:10",
-        location: "Hát Lót",
-      },
-      duration: "05h10",
-      price: 350000,
-    },
-  ];
+const CarScheduleScreen = ({navigation}) => {
+  const currentDate = new Date();
+  const [selectedDate, setSelectedDate] = useState(currentDate.getDate());
+  const [type, setType] = useState();
+  const scrollViewRef = useRef(null);
+  const route = useRoute();
+  const dataSchedule = route?.params.dataSchedule;
 
-  const DateItem = ({ date, index }) => (
-    <View style={styles.dateItem}>
-      <Text style={styles.dateNumber}>{date}</Text>
-      <Text style={styles.dateIndex}>{index}</Text>
-    </View>
+  const getDaysInMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      const itemWidth = 61; // 45(minWidth) + 16(marginHorizontal)
+      const scrollPosition = (currentDate.getDate() - 1) * itemWidth;
+
+      setTimeout(() => {
+        scrollViewRef.current.scrollTo({
+          x: scrollPosition,
+          animated: true
+        });
+      }, 100);
+    }
+  }, []);
+
+  const dates = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const totalDays = getDaysInMonth(year, month);
+
+    return Array.from({ length: totalDays }, (_, i) => ({
+      date: i + 1,
+      dayName: new Date(year, month, i + 1).toLocaleDateString('vi-VN', { weekday: 'short' })
+    }));
+  }, []);
+
+  const DateItem = ({ date, dayName, isSelected }) => (
+      <TouchableOpacity
+          onPress={() => setSelectedDate(date)}
+          style={[
+            styles.dateItem,
+            isSelected && styles.selectedDateItem
+          ]}
+      >
+        <Text style={[
+          styles.dateNumber,
+          isSelected && styles.selectedDateText
+        ]}>{date}</Text>
+        <Text style={[
+          styles.dateIndex,
+          isSelected && styles.selectedDateText
+        ]}>{dayName}</Text>
+      </TouchableOpacity>
   );
 
-  const ScheduleCard = ({ schedule }) => (
-    <TouchableOpacity onPress={() => navigation.navigate("SeatSelectionScreen")}>
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View>
-            <Text style={styles.companyName}>{schedule.company}</Text>
-            <Text style={styles.routeName}>{schedule.route}</Text>
-            <View style={styles.typeContainer}>
-              <Text style={styles.typeText}>{schedule.type}</Text>
-              <Text style={styles.dot}>•</Text>
-              <Text style={styles.seatsText}>{schedule.seats} chỗ trống</Text>
+  const renderScheduleItem = ({ item: schedule }) => (
+      <TouchableOpacity onPress={() => navigation.navigate("SeatSelectionScreen")}>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View>
+              <Text style={styles.companyName}>
+                {schedule.busOperator.name} - {TYPE_BUS.find(t => t.code === schedule.busOperator.types.code)?.name}
+              </Text>
+              <Text style={styles.routeName}>{schedule.route}</Text>
+              <View style={styles.typeContainer}>
+                <Text style={styles.typeText}>{schedule.tripCode}</Text>
+                <Text style={styles.dot}>•</Text>
+                <Text style={styles.seatsText}>{schedule.availableSeats} chỗ trống</Text>
+              </View>
+            </View>
+            <View style={styles.priceContainer}>
+              <Text style={styles.normalPrice}>
+                {schedule.price.toLocaleString()}đ
+              </Text>
+              <Text style={styles.vatText}>đã bao gồm VAT</Text>
             </View>
           </View>
-          <View style={styles.priceContainer}>
-            {schedule.discount ? (
-              <>
-                <View style={styles.discountBadge}>
-                  <Text style={styles.discountText}>
-                    -{schedule.discount}% Hôm nay
+
+          <View style={styles.timelineContainer}>
+            <View style={styles.timeline}>
+              <View style={styles.timelinePoint}>
+                <View style={styles.timelineDot} />
+                <View>
+                  <Text style={styles.timeText}>{schedule.timeStart}</Text>
+                  <Text style={styles.locationText}>
+                    {schedule.benXeKhoiHanh.tenBenXe}
                   </Text>
                 </View>
-                <Text style={styles.originalPrice}>
-                  {schedule.originalPrice.toLocaleString()}đ
-                </Text>
-                <Text style={styles.discountPrice}>
-                  {schedule.discountPrice.toLocaleString()}đ
-                </Text>
-              </>
-            ) : (
-              <Text style={styles.normalPrice}>
-                Từ {schedule.price.toLocaleString()}đ
-              </Text>
-            )}
-            <Text style={styles.vatText}>đã bao gồm VAT</Text>
+              </View>
+              <View style={styles.timelineLine} />
+              <View style={styles.timelinePoint}>
+                <View style={styles.timelineDot} />
+                <View>
+                  <Text style={styles.timeText}>{schedule.timeEnd}</Text>
+                  <Text style={styles.locationText}>
+                    {schedule.benXeDichDen.tenBenXe}
+                  </Text>
+                </View>
+              </View>
+            </View>
+            <Text style={styles.durationText}>{schedule.timeRoute}h</Text>
           </View>
+        </View>
+      </TouchableOpacity>
+  );
+
+  const ListHeader = () => (
+      <View style={styles.headerWrapper}>
+        <View style={styles.monthHeader}>
+          <Text style={styles.monthText}>
+            {currentDate.toLocaleDateString('vi-VN', { month: 'long', year: 'numeric' })}
+          </Text>
         </View>
 
-        <View style={styles.timelineContainer}>
-          <View style={styles.timeline}>
-            <View style={styles.timelinePoint}>
-              <View style={styles.dot} />
-              <View>
-                <Text style={styles.timeText}>{schedule.departure.time}</Text>
-                <Text style={styles.locationText}>
-                  {schedule.departure.location}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.timelineLine} />
-            <View style={styles.timelinePoint}>
-              <View style={styles.dot} />
-              <View>
-                <Text style={styles.timeText}>{schedule.arrival.time}</Text>
-                <Text style={styles.locationText}>
-                  {schedule.arrival.location}
-                </Text>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.durationText}>{schedule.duration}</Text>
-        </View>
+        <ScrollView
+            ref={scrollViewRef}
+            horizontal
+            style={styles.datePicker}
+            showsHorizontalScrollIndicator={false}
+        >
+          {dates.map(({ date, dayName }) => (
+              <DateItem
+                  key={date}
+                  date={date}
+                  dayName={dayName}
+                  isSelected={selectedDate === date}
+              />
+          ))}
+          <TouchableOpacity style={styles.calendarButton}>
+            <Icon name="calendar" size={24} color="#000" />
+          </TouchableOpacity>
+        </ScrollView>
       </View>
-    </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Date Picker */}
-      <ScrollView
-        horizontal
-        style={styles.datePicker}
-        showsHorizontalScrollIndicator={false}
-      >
-        {[14, 15, 16, 17, 18, 19, 20].map((date, index) => (
-          <DateItem key={date} date={date} index={index + 15} />
-        ))}
-        <TouchableOpacity style={styles.calendarButton}>
-          <Icon name="calendar" size={24} color="#000" />
-        </TouchableOpacity>
-      </ScrollView>
+      <SafeAreaView style={styles.container}>
+        <ListHeader/>
+        <FlatList
+            data={dataSchedule}
+            renderItem={renderScheduleItem}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={styles.scheduleList}
+        />
 
-      {/* Schedule List */}
-      <ScrollView style={styles.scheduleList}>
-        {schedules.map((schedule, index) => (
-          <ScheduleCard key={index} schedule={schedule} />
-        ))}
-      </ScrollView>
-
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.bottomNavItem}>
-          <Text style={styles.bottomNavText}>Giờ xuất bến</Text>
-          <Icon name="chevron-down" size={16} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomNavItem}>
-          <Text style={styles.bottomNavText}>Giá</Text>
-          <Icon name="chevron-down" size={16} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.bottomNavItem}>
-          <Text style={[styles.bottomNavText, styles.promoText]}>
-            Khuyến mãi
-          </Text>
-          <View style={styles.promoBadge}>
-            <Text style={styles.promoBadgeText}>1</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="options" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+        <View style={styles.bottomNav}>
+          <TouchableOpacity style={styles.bottomNavItem}>
+            <Text style={styles.bottomNavText}>Giờ xuất bến</Text>
+            <Icon name="chevron-down" size={16} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.bottomNavItem}>
+            <Text style={styles.bottomNavText}>Giá</Text>
+            <Icon name="chevron-down" size={16} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.bottomNavItem}>
+            <Text style={[styles.bottomNavText, styles.promoText]}>
+              Khuyến mãi
+            </Text>
+            <View style={styles.promoBadge}>
+              <Text style={styles.promoBadgeText}>1</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name="options" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
   );
 };
 
@@ -193,6 +187,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
+  },
+  headerWrapper: {
+    height: 115,
+    paddingTop: 8,
+    paddingBottom: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  monthHeader: {
+    padding: 5,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  monthText: {
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   header: {
     flexDirection: "row",
@@ -206,20 +220,32 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   datePicker: {
-    paddingVertical: 8,
+    height: 0,
+    paddingVertical: 4,
     paddingHorizontal: 12,
+    backgroundColor: '#fff',
   },
   dateItem: {
     alignItems: "center",
     marginHorizontal: 8,
-    minWidth: 40,
+    minWidth: 45,
+    padding: 8,
+    borderRadius: 8,
+  },
+  selectedDateItem: {
+    backgroundColor: '#FFA07A',
   },
   dateNumber: {
     fontSize: 16,
+    marginBottom: 4,
   },
   dateIndex: {
     fontSize: 12,
     color: "#666",
+  },
+  selectedDateText: {
+    color: '#FFF',
+    fontWeight: '500',
   },
   calendarButton: {
     marginLeft: 8,
@@ -227,6 +253,7 @@ const styles = StyleSheet.create({
   },
   scheduleList: {
     padding: 16,
+    paddingTop: 5,
   },
   card: {
     backgroundColor: "white",
@@ -265,26 +292,6 @@ const styles = StyleSheet.create({
   priceContainer: {
     alignItems: "flex-end",
   },
-  discountBadge: {
-    backgroundColor: "#FF4444",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  discountText: {
-    color: "white",
-    fontSize: 12,
-  },
-  originalPrice: {
-    color: "#999",
-    textDecorationLine: "line-through",
-    fontSize: 14,
-  },
-  discountPrice: {
-    color: "#FFC107",
-    fontSize: 16,
-    fontWeight: "500",
-  },
   normalPrice: {
     color: "#FFC107",
     fontSize: 16,
@@ -312,7 +319,8 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     marginVertical: 4,
   },
-  dot: {
+  timelineDot: {
+    marginHorizontal: 4,
     width: 8,
     height: 8,
     borderRadius: 4,

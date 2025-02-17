@@ -12,31 +12,42 @@ import {
 import { LinearGradient } from "expo-linear-gradient"; // Thêm import này từ expo-linear-gradient
 import RoleType from "../enums/RoleType";
 import {MESSAGE, SUCCESS, FAIL, ERROR} from "../enums/Message";
-
-const mockUsers = [
-  { username: "khachhang", password: "1", role: 1 },
-  { username: "laixe", password: "1", role: 2 },
-];
+import authService from "../service/AuthService";
+import {Button} from 'react-native-paper';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {showCustomToast} from "../components/common/notifice/CustomToast";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const buttonScale = new Animated.Value(1); // For scaling animation
 
-  const handleLogin = () => {
-    const user = mockUsers.find(
-      (u) => u.username === username && u.password === password
-    );
-
-    if (user) {
-      if (user.role === RoleType.KHACH_HANG) {
-        navigation.replace("MainTabs");
-      } else if (user.role === RoleType.LAI_XE) {
-        navigation.replace("DriverHomeScreen");
+  const handleLogin = async () => {
+    try{
+      setIsLoading(true);
+      const data = {username, password};
+      const res_data= await authService.login(data);
+      if(res_data.status === 200){
+        const userData = await authService.getUser();
+        const roleUser = userData?.data.roleId;
+        if(roleUser.code === RoleType.KHACH_HANG){
+          showCustomToast("Đăng nhập thành công !!!", "success")
+          navigation.replace("MainTabs");
+        }else if(roleUser.code === RoleType.LAI_XE){
+          showCustomToast("Đăng nhập thành công !!!", "success")
+          navigation.replace("DriverHomeScreen");
+        }else{
+          showCustomToast(FAIL.LOGIN_FAIL, "error");
+        }
+      }else{
+        showCustomToast(FAIL.LOGIN_FAIL, 'error');
       }
-    } else {
-      Alert.alert(MESSAGE.FAIL, FAIL.LOGIN_FAIL);
+    }catch (e) {
+      showCustomToast(e.message, 'error')
+    }finally {
+      setIsLoading(false);
     }
   };
 
@@ -90,14 +101,16 @@ const LoginScreen = ({ navigation }) => {
       <Animated.View
         style={[styles.button, { transform: [{ scale: buttonScale }] }]}
       >
-        <TouchableOpacity
+        <Button
           style={styles.buttonTouchable}
           onPress={handleLogin}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
+          loading={isLoading}
+          disabled={isLoading}
         >
           <Text style={styles.buttonText}>Đăng nhập</Text>
-        </TouchableOpacity>
+        </Button>
       </Animated.View>
 
       {/* Footer Links */}
