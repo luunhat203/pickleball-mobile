@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import {TYPE_BUS} from "../../enums/EnumsType";
+import DateItem from "../../components/specific/booking/DateItem";
+import {formatDate} from "../../utils/format";
 
 const CarScheduleScreen = ({navigation}) => {
   const currentDate = new Date();
@@ -49,27 +51,8 @@ const CarScheduleScreen = ({navigation}) => {
     }));
   }, []);
 
-  const DateItem = ({ date, dayName, isSelected }) => (
-      <TouchableOpacity
-          onPress={() => setSelectedDate(date)}
-          style={[
-            styles.dateItem,
-            isSelected && styles.selectedDateItem
-          ]}
-      >
-        <Text style={[
-          styles.dateNumber,
-          isSelected && styles.selectedDateText
-        ]}>{date}</Text>
-        <Text style={[
-          styles.dateIndex,
-          isSelected && styles.selectedDateText
-        ]}>{dayName}</Text>
-      </TouchableOpacity>
-  );
-
   const renderScheduleItem = ({ item: schedule }) => (
-      <TouchableOpacity onPress={() => navigation.navigate("SeatSelectionScreen")}>
+      <TouchableOpacity onPress={() => navigation.navigate("SeatSelectionScreen", {busType: schedule.busOperator.types.code, dataSchedule})}>
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View>
@@ -96,7 +79,7 @@ const CarScheduleScreen = ({navigation}) => {
               <View style={styles.timelinePoint}>
                 <View style={styles.timelineDot} />
                 <View>
-                  <Text style={styles.timeText}>{schedule.timeStart}</Text>
+                  <Text style={styles.timeText}>{formatDate(schedule.timeStart)}</Text>
                   <Text style={styles.locationText}>
                     {schedule.benXeKhoiHanh.tenBenXe}
                   </Text>
@@ -106,7 +89,7 @@ const CarScheduleScreen = ({navigation}) => {
               <View style={styles.timelinePoint}>
                 <View style={styles.timelineDot} />
                 <View>
-                  <Text style={styles.timeText}>{schedule.timeEnd}</Text>
+                  <Text style={styles.timeText}>{formatDate(schedule.timeEnd)}</Text>
                   <Text style={styles.locationText}>
                     {schedule.benXeDichDen.tenBenXe}
                   </Text>
@@ -139,6 +122,7 @@ const CarScheduleScreen = ({navigation}) => {
                   date={date}
                   dayName={dayName}
                   isSelected={selectedDate === date}
+                  setSelectedDate={setSelectedDate}
               />
           ))}
           <TouchableOpacity style={styles.calendarButton}>
