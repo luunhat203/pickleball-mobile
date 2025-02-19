@@ -7,10 +7,12 @@ import {
     StyleSheet,
     Alert,
     Image,
+    SafeAreaView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import {MESSAGE, SUCCESS, FAIL, ERROR} from "../enums/Message";
+import { MESSAGE, SUCCESS, FAIL, ERROR } from "../enums/Message";
 import authService from "../service/AuthService";
+import {showCustomToast} from "../components/common/notifice/CustomToast";
 
 const RegisterScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
@@ -21,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleRegister = async () => {
-        try{
+        try {
             if (!username || !email || !fullname || !phone || !password || !confirmPassword) {
                 Alert.alert(MESSAGE.ERROR, ERROR.NOT_FILL);
                 return;
@@ -35,95 +37,97 @@ const RegisterScreen = ({ navigation }) => {
                 return;
             }
 
-
-
-        }catch (e) {
-
-        }finally {
-
+        } catch (e) {
+            showCustomToast(e.message, "error")
+        } finally {
         }
     };
 
     return (
-        <LinearGradient
-            colors={["#FFFAF0", "#FFD700", "#FF8C00", "#FFA07A", "#FFFFFF"]}
-            style={styles.container}
-        >
-            <Image source={require("../assets/logo-banner.png")} style={styles.logo} />
+        <SafeAreaView style={styles.safeArea}>
+            <LinearGradient
+                colors={["#FFFAF0", "#FFD700", "#FF8C00", "#FFA07A", "#FFFFFF"]}
+                style={styles.container}
+            >
+                <Image source={require("../assets/logo-banner.png")} style={styles.logo} />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Tên đăng nhập"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Tên đăng nhập"
+                    value={username}
+                    onChangeText={setUsername}
+                    autoCapitalize="none"
+                    placeholderTextColor="#aaa"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Tên đầy đủ"
-                value={fullname}
-                onChangeText={setFullname}
-                autoCapitalize="words"
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Tên đầy đủ"
+                    value={fullname}
+                    onChangeText={setFullname}
+                    autoCapitalize="words"
+                    placeholderTextColor="#aaa"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    placeholderTextColor="#aaa"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Số điện thoại"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Số điện thoại"
+                    value={phone}
+                    onChangeText={setPhone}
+                    keyboardType="phone-pad"
+                    placeholderTextColor="#aaa"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Mật khẩu"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Mật khẩu"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    placeholderTextColor="#aaa"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Nhập lại mật khẩu"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-                placeholderTextColor="#aaa"
-            />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nhập lại mật khẩu"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry
+                    placeholderTextColor="#aaa"
+                />
 
-
-            <TouchableOpacity style={styles.button} onPress={handleRegister}>
-                <Text style={styles.buttonText}>Đăng ký</Text>
-            </TouchableOpacity>
-
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>Đã có tài khoản?</Text>
-                <TouchableOpacity onPress={() => navigation.replace("Login")}>
-                    <Text style={styles.footerLink}>Đăng nhập</Text>
+                <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                    <Text style={styles.buttonText}>Đăng ký</Text>
                 </TouchableOpacity>
-            </View>
-        </LinearGradient>
+
+                <View style={styles.footer}>
+                    <Text style={styles.footerText}>Đã có tài khoản?</Text>
+                    <TouchableOpacity onPress={() => navigation.replace("Login")}>
+                        <Text style={styles.footerLink}>Đăng nhập</Text>
+                    </TouchableOpacity>
+                </View>
+            </LinearGradient>
+        </SafeAreaView>
     );
 };
 
 export default RegisterScreen;
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: "#FFFAF0", // Màu nền để tránh nhấp nháy khi load
+    },
     container: {
         flex: 1,
         justifyContent: "center",

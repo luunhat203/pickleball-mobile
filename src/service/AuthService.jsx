@@ -15,15 +15,8 @@ const AuthService = {
         }
     },
     async register(userReq) {
-        try{
-            
-        }catch (e) {
-            
-        }
-    },
-    async login (userReq) {
-        try{
-            const res = await fetch(`${apiConfig.baseUrl}/auth/login`, {
+        try {
+            const res = await fetch(`${apiConfig.baseUrl}/auth/register`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(userReq)
@@ -32,20 +25,36 @@ const AuthService = {
             if(!res.ok){
                 throw new Error(data.message);
             }
-            if(data.data != null){
+            return data;
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    },
+    async login(userReq) {
+        try {
+            const res = await fetch(`${apiConfig.baseUrl}/auth/login`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(userReq)
+            })
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.message);
+            }
+            if (data.data != null) {
                 await AsyncStorage.setItem("token", data.data);
-            }else{
+            } else {
                 await AsyncStorage.removeItem("token");
             }
             return data;
-        }catch (e) {
+        } catch (e) {
             throw new Error(e);
         }
     },
-    async getUser(){
-        try{
+    async getUser() {
+        try {
             const token = await AsyncStorage.getItem("token");
-            if(!token){
+            if (!token) {
                 throw new Error("Lỗi khi lấy token");
             }
             const tokenDecode = jwtDecode(token);
@@ -54,11 +63,11 @@ const AuthService = {
                 headers: apiConfig.getAuthHeaders(token),
             })
             const data = await res.json();
-            if(!res.ok){
+            if (!res.ok) {
                 throw new Error("Lỗi khi lấy dữ liệu!!!")
             }
             return data;
-        }catch (e) {
+        } catch (e) {
             throw new Error(e);
         }
     }

@@ -6,7 +6,6 @@ import {
     StyleSheet,
     SafeAreaView,
     TextInput,
-    Button,
     FlatList,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -18,6 +17,7 @@ import {showCustomToast} from "../../components/common/notifice/CustomToast";
 import ActionSheetLocation from "../../components/specific/locationScr/actionsheet/ActionSheetLocation";
 import ActionSheetPickDate from "../../components/specific/locationScr/actionsheet/ActionSheetPickDate";
 import ActionSheetPickPassenger from "../../components/specific/locationScr/actionsheet/ActionSheetPickPassenger";
+import {Button} from 'react-native-paper';
 
 const LocationScreen = ({navigation}) => {
     const currentDate = new Date();
@@ -32,6 +32,7 @@ const LocationScreen = ({navigation}) => {
     const [locationStart, setLocationStart] = useState(null);
     const [locationEnd, setLocationEnd] = useState(null);
     const [currentLocationType, setCurrentLocationType] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,20 +78,23 @@ const LocationScreen = ({navigation}) => {
     };
 
     const handleCarSchedule = async () => {
-        try{
+        try {
             const benXeKhoiHanh = locationStart.maBenXe;
             const benXeDichDen = locationEnd.maBenXe;
             const dataReq = {benXeKhoiHanh, benXeDichDen, date, passengerCnt};
             const resData = await TripService.loadSchedule(dataReq);
-            if(resData.status === 200) {
+            if (resData.status === 200) {
                 setData(resData.data);
                 showCustomToast(resData.message, "success")
-                navigation.navigate("CarScheduleScreen", {dataSchedule: data});
-            }else{
+                setIsLoading(true);
+                navigation.navigate("CarScheduleScreen", {dataSchedule: resData.data});
+            } else {
                 showCustomToast("Loi khi lay du lieu !", "error")
             }
-        }catch (e) {
+        } catch (e) {
             showCustomToast(e.message, "error");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -106,7 +110,7 @@ const LocationScreen = ({navigation}) => {
                         <Icon name="radio-button-checked" size={24} color="#000"/>
                         <View style={styles.locationTextContainer}>
                             <Text style={styles.locationText}>
-                                {locationStart ? locationStart.tenBenXe : "Chọn điểm xuất phát"}
+                                {locationStart ? locationStart.tenBenXe :  "Chọn điểm xuất phát"}
                             </Text>
                         </View>
                     </View>
@@ -152,7 +156,7 @@ const LocationScreen = ({navigation}) => {
 
                 <ActionSheetPickDate actionSheetRef={actionSheetRef}
                                      date={date}
-                                     onChange={onChange} />
+                                     onChange={onChange}/>
 
                 <TouchableOpacity
                     style={styles.passengerItem}
@@ -167,12 +171,13 @@ const LocationScreen = ({navigation}) => {
                                           passengerCnt={passengerCnt}
                                           increasePassenger={increasePassenger}/>
 
-                <TouchableOpacity
+                <Button
                     style={styles.searchButton}
                     onPress={handleCarSchedule}
+                    loading={isLoading}
                 >
                     <Text style={styles.searchButtonText}>Tìm kiếm</Text>
-                </TouchableOpacity>
+                </Button>
             </View>
         </SafeAreaView>
     );

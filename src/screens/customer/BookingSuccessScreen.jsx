@@ -2,7 +2,12 @@ import React from 'react';
 import { StyleSheet, View, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
-export default function BookingSuccessScreen() {
+export default function BookingSuccessScreen({navigation}) {
+
+    const handleBackHome = () => {
+        navigation.replace("MainTabs")
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="dark" />
@@ -88,7 +93,7 @@ export default function BookingSuccessScreen() {
             </TouchableOpacity>
 
             {/* Ticket Button */}
-            <TouchableOpacity style={styles.ticketButton}>
+            <TouchableOpacity style={styles.ticketButton} onPress={() => handleBackHome()}>
                 <Text style={styles.ticketButtonText}>Vé của tôi</Text>
             </TouchableOpacity>
         </SafeAreaView>

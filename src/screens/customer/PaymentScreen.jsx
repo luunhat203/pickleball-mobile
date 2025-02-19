@@ -1,44 +1,32 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import {PAYMENT_METHODS} from '../../enums/PaymentMethods'
 
-const PaymentScreen = () => {
-  const navigation = useNavigation();
+const PaymentScreen = ({navigation, route}) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(10 * 60);
+  const [dataBooking, setDataBooking] = useState({});
 
-  const paymentMethods = [
-    {
-      id: 1,
-      title: 'Thanh toán bằng mã QR',
-      subtitle: 'Thanh toán bằng mã QR qua VNPay',
-      icon: 'qrcode',
-    },
-    {
-      id: 2,
-      title: 'Thanh toán trực tuyến',
-      subtitle: 'Thanh toán trực tuyến qua VNPay',
-      icon: 'credit-card-outline',
-    },
-    {
-      id: 3,
-      title: 'Thanh toán bằng thẻ quốc tế',
-      subtitle: 'Visa, Mastercard, JCB, Amex',
-      icon: 'credit-card',
-    },
-    {
-      id: 4,
-      title: 'Tiền mặt',
-      subtitle: 'Thanh toán bằng tiền mặt khi lên xe',
-      icon: 'cash',
-    },
-    {
-      id: 5,
-      title: 'Chuyển khoản',
-      subtitle: 'Thanh toán bằng chuyển khoản ngân hàng',
-      icon: 'bank-transfer',
-    },
-  ];
+  useEffect(() => {
+    if(route && route.params && route.params.dataBooking){
+      setDataBooking(route.params.dataBooking)
+    }
+  }, [route]);
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timeLeft]);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
 
   const bookingInfo = {
     bookingId: 'B01V1G4L94V',
@@ -66,12 +54,6 @@ const PaymentScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      {/* <View style={styles.header}>
-        <MaterialIcons name="arrow-back" size={24} color="#000" />
-        <Text style={styles.headerTitle}>Thanh toán</Text>
-      </View> */}
-
       {/* Progress Indicator */}
       <View style={styles.progressContainer}>
         <View style={styles.progressLine}>
@@ -86,12 +68,12 @@ const PaymentScreen = () => {
         </View>
       </View>
 
-      <Text style={styles.bookingTime}>Thời gian đặt vé còn: 9:46</Text>
+      <Text style={styles.bookingTime}>Thời gian đặt vé còn: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</Text>
 
       {/* Payment Methods */}
       <Text style={styles.sectionTitle}>Vui lòng chọn hình thức thanh toán</Text>
       <ScrollView style={styles.methodsContainer}>
-        {paymentMethods.map((method) => (
+        {PAYMENT_METHODS.map((method) => (
           <TouchableOpacity
             key={method.id}
             style={styles.methodItem}

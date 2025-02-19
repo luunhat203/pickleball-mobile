@@ -19,7 +19,6 @@ const EditProfile = ({navigation}) => {
         fetchData();
     }, []);
 
-    console.log(userInfo)
 
 
     return (
