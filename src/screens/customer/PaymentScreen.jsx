@@ -1,19 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {PAYMENT_METHODS} from '../../enums/PaymentMethods'
+import PaymentService from "../../service/booking/PaymentService";
+import {showCustomToast} from "../../components/common/notifice/CustomToast";
+import {formatCurrency, formatTime} from "../../utils/format";
 
 const PaymentScreen = ({navigation, route}) => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [timeLeft, setTimeLeft] = useState(10 * 60);
-  const [dataBooking, setDataBooking] = useState({});
-
-  useEffect(() => {
-    if(route && route.params && route.params.dataBooking){
-      setDataBooking(route.params.dataBooking)
-    }
-  }, [route]);
+  const dataBooking = route.params.dataBooking;
+  const [urlVnPayQr, setUrlVnPayQr] = useState('');
 
   useEffect(() => {
     if (timeLeft <= 0) return;
@@ -28,28 +26,48 @@ const PaymentScreen = ({navigation, route}) => {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  const bookingInfo = {
-    bookingId: 'B01V1G4L94V',
-    route: 'Mỹ Đình - Sơn La',
-    departureTime: '20-01-2025 06:00',
-    carrier: 'Hải Vân',
-    total: '325,000đ',
-  };
-
   const RadioButton = ({ selected }) => (
-    <View style={styles.radioContainer}>
-      {selected ? (
-        <View style={styles.radioButtonSelected}>
-          <View style={styles.radioButtonInner} />
-        </View>
-      ) : (
-        <View style={styles.radioButton} />
-      )}
-    </View>
+      <View style={styles.radioContainer}>
+        {selected ? (
+            <View style={styles.radioButtonSelected}>
+              <View style={styles.radioButtonInner} />
+            </View>
+        ) : (
+            <View style={styles.radioButton} />
+        )}
+      </View>
   );
 
-  const submitPayment = () => {
-    navigation.replace("BookingSuccessScreen");
+  const submitPayment = async () => {
+    try{
+      switch (selectedMethod){
+        case 1:
+          const dataReq = {
+            orderId: dataBooking?.code,
+            totalPrice: dataBooking?.totalPrice * 1000,
+            bankCode: "NCB",
+            orderInfo: "Thanh toan ve xe giuong nam ma" +  dataBooking?.code,
+            orderType: "Đặt vé xe khách"
+          }
+          const resData = await PaymentService.getUrlVnPayQrCode(dataReq);
+          setUrlVnPayQr(resData.data);
+          navigation.navigate("VnPayPayment", {urlVnPayQr: resData.data, dataBooking: dataBooking})
+          return;
+        case 2:
+          showCustomToast(selectedMethod, "info")
+          return;
+        case 3:
+          showCustomToast(selectedMethod, "info")
+          return;
+        case 4:
+          showCustomToast(selectedMethod, "info")
+          return;
+        default:
+          return
+      }
+    }catch (e) {
+
+    }
   }
 
   return (
@@ -94,19 +112,19 @@ const PaymentScreen = ({navigation, route}) => {
         <Text style={styles.bookingTitle}>Thông tin đặt chỗ</Text>
         <View style={styles.bookingRow}>
           <Text style={styles.bookingLabel}>Booking #</Text>
-          <Text style={styles.bookingValue}>{bookingInfo.bookingId}</Text>
+          <Text style={styles.bookingValue}>{dataBooking?.code}</Text>
         </View>
         <View style={styles.bookingRow}>
           <Text style={styles.bookingLabel}>Tên tuyến</Text>
-          <Text style={styles.bookingValue}>{bookingInfo.route}</Text>
+          <Text style={styles.bookingValue}>{dataBooking?.busSchedule?.route}</Text>
         </View>
         <View style={styles.bookingRow}>
           <Text style={styles.bookingLabel}>Giờ xuất bến</Text>
-          <Text style={styles.bookingValue}>{bookingInfo.departureTime}</Text>
+          <Text style={styles.bookingValue}>{formatTime(dataBooking?.departureTime)}</Text>
         </View>
         <View style={styles.bookingRow}>
           <Text style={styles.bookingLabel}>Đơn vị vận chuyển</Text>
-          <Text style={styles.bookingValue}>{bookingInfo.carrier}</Text>
+          <Text style={styles.bookingValue}>Sao Việt</Text>
         </View>
       </View>
 
@@ -114,7 +132,7 @@ const PaymentScreen = ({navigation, route}) => {
       <View style={styles.footer}>
         <View style={styles.totalContainer}>
           <Text style={styles.totalLabel}>Tổng</Text>
-          <Text style={styles.totalAmount}>{bookingInfo.total}</Text>
+          <Text style={styles.totalAmount}>{formatCurrency(dataBooking?.totalPrice)}</Text>
         </View>
         <TouchableOpacity 
           style={[
@@ -265,7 +283,7 @@ const styles = StyleSheet.create({
   totalAmount: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#ff8e5e',
   },
   paymentButton: {
     backgroundColor: '#FFA07A',
