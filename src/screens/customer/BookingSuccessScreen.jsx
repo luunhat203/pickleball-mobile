@@ -1,8 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import {formatCurrency, formatMoney, formatTime} from "../../utils/format";
 
-export default function BookingSuccessScreen({navigation}) {
+export default function BookingSuccessScreen({navigation, route}) {
+    const dataBooking = route.params.dataBooking;
+
+    console.log(dataBooking, "dataBooking")
 
     const handleBackHome = () => {
         navigation.replace("MainTabs")
@@ -32,19 +36,19 @@ export default function BookingSuccessScreen({navigation}) {
             <View style={styles.detailsContainer}>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Booking #</Text>
-                    <Text style={styles.value}>B01BZ24JR4E</Text>
+                    <Text style={styles.value}>{dataBooking?.code}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Giờ xuất bến</Text>
-                    <Text style={styles.value}>17-02-2025 22:00</Text>
+                    <Text style={styles.value}>{formatTime(dataBooking?.departureTime)}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Tên tuyến</Text>
-                    <Text style={styles.value}>Mỹ Đình - Sơn La</Text>
+                    <Text style={styles.value}>{dataBooking?.busSchedule?.route}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Đơn vị vận chuyển</Text>
-                    <Text style={styles.value}>Hải Vân</Text>
+                    <Text style={styles.value}>Sao Việt</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Hạng xe</Text>
@@ -52,23 +56,23 @@ export default function BookingSuccessScreen({navigation}) {
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Số ghế/giường</Text>
-                    <Text style={styles.value}>2</Text>
+                    <Text style={styles.value}>{dataBooking?.seats.length}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Điểm lên xe</Text>
-                    <Text style={styles.value}>Hát Lót</Text>
+                    <Text style={styles.value}>{dataBooking?.pickupLocation}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Điểm xuống xe</Text>
-                    <Text style={styles.value}>Bến xe Mỹ Đình</Text>
+                    <Text style={styles.value}>{dataBooking?.dropoffLocation}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Phụ thu</Text>
-                    <Text style={styles.value}>0đ</Text>
+                    <Text style={styles.value}>{formatCurrency(dataBooking?.surcharge)}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Giá vé</Text>
-                    <Text style={styles.value}>400,000đ</Text>
+                    <Text style={styles.value}>{formatMoney(dataBooking?.busSchedule?.price)}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Trạng thái</Text>
@@ -76,7 +80,7 @@ export default function BookingSuccessScreen({navigation}) {
                 </View>
                 <View style={styles.detailRow}>
                     <Text style={styles.label}>Tổng</Text>
-                    <Text style={styles.value}>400,000đ</Text>
+                    <Text style={styles.value}>{formatCurrency(dataBooking?.totalPrice)}</Text>
                 </View>
             </View>
 

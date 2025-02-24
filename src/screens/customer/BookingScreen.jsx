@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {jwtDecode} from "jwt-decode";
 import {formatTime} from "../../utils/format";
 import {MaterialIcons} from "@expo/vector-icons";
+import {getStatusStyle, getStatusText} from "../../utils/formatStatus";
 
 
 const BookingScreen = ({navigation}) => {
@@ -44,88 +45,55 @@ const BookingScreen = ({navigation}) => {
     }, []);
 
 
-    const history = [
-        {
-            id: "1",
-            ticketCode: "HS1234",
-            time: "2025-01-10 09:00",
-            from: "Hà Nội",
-            to: "Lạng Sơn",
-            status: "Completed",
-        },
-        {
-            id: "2",
-            ticketCode: "HS5678",
-            time: "2025-01-09 14:00",
-            from: "Hà Nội",
-            to: "Sơn La",
-            status: "Cancelled",
-        },
-    ];
+    const handlePayment = (item) => {
+        try {
+            navigation.navigate("PaymentScreen", {dataBooking: item});
+        }catch (e) {
+            showCustomToast(e.message, "error");
+        }
+    }
+
+    const handleDetailTrip = (item) => {
+        try{
+            navigation.navigate("TripDetailScreen", {data: item});
+        }catch (e) {
+            showCustomToast(e.message, "error")
+        }
+    }
 
     const renderItem = ({item}) => (
         <View style={styles.ticketContainer}>
-            <View style={styles.ticket}>
-                <View style={styles.ticketHeader}>
-                    <Text style={styles.ticketCode}>
-                        🎟 Ticket Code: {item.code}
-                    </Text>
-                    <Text style={[styles.status, getStatusStyle(item.status)]}>
-                        {getStatusText(item.status)}
-                    </Text>
-                </View>
-                <View style={styles.ticketBody}>
-                    <Text style={styles.ticketDetail}>🕒 Time: {formatTime(item.departureTime)}</Text>
-                    <Text style={styles.ticketDetail}>📍 From: {item.pickupLocation}</Text>
-                    <Text style={styles.ticketDetail}>📍 To: {item.dropoffLocation}</Text>
-                </View>
-                {item.status === 'pending' ? (
-                    <TouchableOpacity style={styles.payButton} activeOpacity={0.7}>
-                        <MaterialIcons name="payment" size={20} color="#fff" style={styles.payIcon}/>
-                        <Text style={styles.payButtonText}>Thanh toán ngay</Text>
-                    </TouchableOpacity>
-                ) : ""}
+            <TouchableOpacity onPress={() => handleDetailTrip(item)}>
+                <View style={styles.ticket}>
+                    <View style={styles.ticketHeader}>
+                        <Text style={styles.ticketCode}>
+                            🎟 Ticket Code: {item.code}
+                        </Text>
+                        <Text style={[styles.status, getStatusStyle(item.status)]}>
+                            {getStatusText(item.status)}
+                        </Text>
+                    </View>
+                    <View style={styles.ticketBody}>
+                        <Text style={styles.ticketDetail}>🕒 Thời gian: {formatTime(item.departureTime)}</Text>
+                        <Text style={styles.ticketDetail}>📍 Điểm xuất phát: {item.pickupLocation}</Text>
+                        <Text style={styles.ticketDetail}>📍 Điểm đến: {item.dropoffLocation}</Text>
+                    </View>
+                    {item.status === 'pending' ? (
+                        <TouchableOpacity style={styles.payButton} activeOpacity={0.7} onPress={() => handlePayment(item)}>
+                            <MaterialIcons name="payment" size={20} color="#fff" style={styles.payIcon}/>
+                            <Text style={styles.payButtonText}>Thanh toán ngay</Text>
+                        </TouchableOpacity>
+                    ) : ""}
 
 
-                <View style={styles.ticketFooter}>
-                    <View style={styles.dottedLine}/>
-                    <Text style={styles.footerText}>Tận hưởng chuyến đi! 🚍</Text>
+                    <View style={styles.ticketFooter}>
+                        <View style={styles.dottedLine}/>
+                        <Text style={styles.footerText}>Tận hưởng chuyến đi! 🚍</Text>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         </View>
     );
-
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case "confirmed":
-                return {color: "#4CAF50"}; // Green
-            case "pending":
-                return {color: "#FF9800"}; // Orange
-            case "completed":
-                return {color: "#2196F3"}; // Blue
-            case "cancelled":
-                return {color: "#F44336"}; // Red
-            default:
-                return {color: "#000"};
-        }
-    };
-
-    const getStatusText = (status) => {
-        switch (status) {
-            case "confirmed":
-                return "Đã xác nhận"; // Green
-            case "pending":
-                return "Chờ thanh toán"; // Orange
-            case "completed":
-                return "Đã hoàn thành"; // Blue
-            case "cancelled":
-                return "Đã hủy"; // Red
-            case "drafted":
-                return "Đã xóa"
-            default:
-                return {color: "#000"};
-        }
-    }
 
     return (
         <View style={styles.container}>
@@ -133,8 +101,8 @@ const BookingScreen = ({navigation}) => {
             <Tab tab={tab} setTab={setTab}/>
             {/* Content */}
             <FlatList
-                data={tab === "bookings" ? dataBooking : history}
-                keyExtractor={(item) => item.id}
+                data={dataBooking}
+                keyExtractor={(item) => item._id}
                 renderItem={renderItem}
                 contentContainerStyle={styles.list}
             />
@@ -187,11 +155,13 @@ const styles = StyleSheet.create({
     ticketContainer: {
         marginVertical: 8,
         paddingHorizontal: 5,
+        alignItems: "center"
     },
     ticket: {
         backgroundColor: "#fff",
         borderRadius: 10,
-        padding: 16,
+        padding: 10,
+        width: 400,
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 6,

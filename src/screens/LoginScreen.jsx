@@ -14,7 +14,6 @@ import RoleType from "../enums/RoleType";
 import {MESSAGE, SUCCESS, FAIL, ERROR} from "../enums/Message";
 import authService from "../service/AuthService";
 import {Button} from 'react-native-paper';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {showCustomToast} from "../components/common/notifice/CustomToast";
 
 const LoginScreen = ({ navigation }) => {

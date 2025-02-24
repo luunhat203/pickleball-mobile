@@ -6,6 +6,15 @@ export const formatCurrency = (amount, currency = 'VND', locale = 'vi-VN') => {
     }).format(amount * 1000);
 };
 
+export const formatMoney = (amount, currency = 'VND', locale = 'vi-VN') => {
+    if (isNaN(amount)) return ''; // Nếu amount không hợp lệ, trả về chuỗi rỗng
+    return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0, // Không có số thập phân
+    }).format(amount);
+};
+
 export const formatDate = (dateString) => {
     const date = new Date(dateString);
 

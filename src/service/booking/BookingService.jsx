@@ -4,7 +4,6 @@ import {checkToken} from "../../utils/auth";
 const BookingService = {
     async getByUser(dataReq) {
         try{
-            console.log(dataReq)
             const token = await checkToken();
             if(token == null){
                 throw new Error("Đã hết phiên đăng nhập, vui lòng đăng nhập lại.")
@@ -14,7 +13,6 @@ const BookingService = {
                 headers: ApiConfig.getAuthHeaders(token)
             });
             const data = await res.json();
-            console.log(data)
             if(!res.ok){
                 throw new Error("Lỗi khi lấy dữ liệu!!")
             }
@@ -22,7 +20,10 @@ const BookingService = {
         }catch (e) {
             throw new Error(e);
         }
-    }
+    },
+    async getById(dataReq){
+
+    },
 }
 
 export default BookingService;

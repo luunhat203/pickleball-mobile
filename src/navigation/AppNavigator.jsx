@@ -19,6 +19,8 @@ import RegisterScreen from "../screens/RegisterScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditProfile from "../screens/customer/DetailProfileScreen";
 import DetailProfileScreen from "../screens/customer/DetailProfileScreen";
+import TripDetailScreen from "../screens/customer/TripDetailScreen";
+import VNPayPayment from "../components/specific/booking/VNPayPayment";
 
 const Stack = createStackNavigator();
 
@@ -99,6 +101,16 @@ const SCREEN_CONFIGS = [
             ...getCommonHeaderOptions("Hoàn thành"),
             headerLeft: () => null,
         }
+    },
+    {
+        name: "TripDetailScreen",
+        component: TripDetailScreen,
+        options: getCommonHeaderOptions("Chi tiết vé đã đặt")
+    },
+    {
+        name: "VnPayPayment",
+        component: VNPayPayment,
+        options: {headerShown: false}
     }
 ];
 
