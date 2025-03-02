@@ -13,18 +13,20 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
 
-    const handleLogin = () => {
-        console.log('Đăng nhập:', { email, password });
-        // Xử lý logic đăng nhập ở đây
+    const handleRegister = () => {
+        console.log('Đăng ký:', { fullName, email, phoneNumber, password });
+        // Xử lý logic đăng ký ở đây
     };
 
-    const navigateToRegister = () => {
-        // Điều hướng đến màn hình đăng ký
-        navigation.navigate('Register');
+    const navigateToLogin = () => {
+        // Điều hướng đến màn hình đăng nhập
+        navigation.navigate('Login');
     };
 
     return (
@@ -45,7 +47,17 @@ const LoginScreen = ({ navigation }) => {
                     </View>
 
                     <View style={styles.formContainer}>
-                        <Text style={styles.headerText}>Đăng Nhập</Text>
+                        <Text style={styles.headerText}>Đăng Ký Tài Khoản</Text>
+
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Họ và Tên</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Nhập họ và tên"
+                                value={fullName}
+                                onChangeText={setFullName}
+                            />
+                        </View>
 
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Email</Text>
@@ -60,6 +72,17 @@ const LoginScreen = ({ navigation }) => {
                         </View>
 
                         <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Số Điện Thoại</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Nhập số điện thoại"
+                                keyboardType="phone-pad"
+                                value={phoneNumber}
+                                onChangeText={setPhoneNumber}
+                            />
+                        </View>
+
+                        <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Mật Khẩu</Text>
                             <TextInput
                                 style={styles.input}
@@ -70,21 +93,17 @@ const LoginScreen = ({ navigation }) => {
                             />
                         </View>
 
-                        <TouchableOpacity style={styles.forgotPassword}>
-                            <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={handleLogin}>
+                        <TouchableOpacity onPress={handleRegister}>
                             <LinearGradient
                                 colors={['#4CAF50', '#2E7D32']}
                                 style={styles.submitButton}
                             >
-                                <Text style={styles.submitButtonText}>Đăng Nhập</Text>
+                                <Text style={styles.submitButtonText}>Đăng Ký</Text>
                             </LinearGradient>
                         </TouchableOpacity>
 
                         <View style={styles.socialLoginContainer}>
-                            <Text style={styles.socialLoginText}>Hoặc đăng nhập với</Text>
+                            <Text style={styles.socialLoginText}>Hoặc đăng ký với</Text>
                             <View style={styles.socialButtons}>
                                 <TouchableOpacity style={styles.socialButton}>
                                     <Text style={styles.socialButtonText}>Google</Text>
@@ -96,9 +115,9 @@ const LoginScreen = ({ navigation }) => {
                         </View>
 
                         <View style={styles.toggleContainer}>
-                            <Text style={styles.toggleText}>Chưa có tài khoản? </Text>
-                            <TouchableOpacity onPress={navigateToRegister}>
-                                <Text style={styles.toggleButtonText}>Đăng ký ngay</Text>
+                            <Text style={styles.toggleText}>Đã có tài khoản? </Text>
+                            <TouchableOpacity onPress={navigateToLogin}>
+                                <Text style={styles.toggleButtonText}>Đăng nhập</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -180,14 +199,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: '#f9f9f9',
     },
-    forgotPassword: {
-        alignSelf: 'flex-end',
-        marginBottom: 20,
-    },
-    forgotPasswordText: {
-        color: '#2E7D32',
-        fontSize: 14,
-    },
     submitButton: {
         borderRadius: 8,
         padding: 16,
@@ -241,4 +252,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

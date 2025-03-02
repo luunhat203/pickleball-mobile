@@ -4,11 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/customer/HomeScreen";
-import BookingScreen from "../screens/customer/BookingScreen";
 import { Badge } from "react-native-paper";
 import HistoryScreen from "../screens/customer/HistoryScreen";
-import NotificationScreen from "../screens/customer/NotificationScreen";
 import ProfileScreen from "../screens/customer/ProfileScreen";
+import CartScreen from "../screens/customer/CartScreen";
 const Tab = createBottomTabNavigator();
 
 const NavigationTab = () => {
@@ -28,28 +27,28 @@ const NavigationTab = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <>
-              <Ionicons name="home" size={size} color={color} />
+              <Ionicons name="home-outline" size={size} color={color} />
             </>
           ),
           headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Booking"
-        component={BookingScreen}
+        name="Card"
+        component={CartScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="book" size={size} color={color} />
+            <Ionicons name="cart-outline" size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
         name="Thông báo"
-        component={NotificationScreen}
+        component={HistoryScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <>
-              <Ionicons name="notifications" size={size} color={color} />
+              <Ionicons name="notifications-circle-outline" size={size} color={color} />
               <Badge
                 style={{
                   position: "absolute",

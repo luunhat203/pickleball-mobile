@@ -1,142 +1,264 @@
 import React from "react";
-import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import Logo from "../../components/common/Logo";
-import SearchBar from "../../components/common/SearchBar";
-import TransportOptions from "../../components/common/TransportOptions";
-import PopularDestinations from "../../components/specific/home/PopularDestinations";
-import Banner from "../../components/specific/home/Banner";
-import { FontAwesome5, Ionicons } from "@expo/vector-icons";
-import { Icon } from "react-native-paper";
+import { View, Text, TextInput, ScrollView, Image, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
+const paddles = [
+  { id: 1, name: "Pro Paddle X", price: "$99", image: require("../../assets/vot-pickleball-joola-collin-johns-scorpeus-3-16mm_1724286108.jpg") },
+  { id: 2, name: "Elite Paddle Z", price: "$129", image: require("../../assets/vot-pickleball-12-1736824333.webp") },
+  { id: 3, name: "Champion Paddle V", price: "$149", image: require("../../assets/images.jpg") },
+];
 
-const HomeScreen = () => {
-  const tabBarHeight = useBottomTabBarHeight();
-  const screenHeight = Dimensions.get("window").height;
-  
-
+export default function HomeScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Gradient Background */}
-      <View style={styles.gradientContainer}>
-        <LinearGradient
-          colors={["#FFA07A", "#FFFFFF"]}
-          style={[styles.gradientBackground, { height: screenHeight / 2 }]}
-        />
-      </View>
+      <View style={styles.container}>
+        <StatusBar style="dark" />
 
-      {/* Main Content */}
-      <ScrollView
-        contentContainerStyle={[
-          styles.contentContainer,
-          { paddingBottom: tabBarHeight },
-        ]}
-      >
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Logo />
-        </View>
-
-        {/* Banner */}
-        <View style={styles.bannerContainer}>
-          <Banner />
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>🏓 Vợt Pickleball</Text>
+          <TouchableOpacity style={styles.cartButton} onPress={() => navigation.navigate("Card")}>
+            <FontAwesome name="shopping-cart" size={24} color="#333" />
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>2</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
-          <SearchBar />
+          <FontAwesome name="search" size={18} color="gray" style={styles.searchIcon} />
+          <TextInput
+              placeholder="Tìm kiếm vợt..."
+              placeholderTextColor="gray"
+              style={styles.searchInput}
+          />
+          <TouchableOpacity style={styles.filterButton}>
+            <FontAwesome name="sliders" size={18} color="#333" />
+          </TouchableOpacity>
         </View>
 
-        {/* Transport Options */}
-        <View style={styles.transportContainer}>
-          <TransportOptions />
+        {/* Categories */}
+        <View style={styles.categoriesContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <TouchableOpacity style={[styles.categoryButton, styles.categoryActive]}>
+              <Text style={styles.categoryActiveText}>Tất cả</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryButton}>
+              <Text style={styles.categoryText}>Mới nhất</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryButton}>
+              <Text style={styles.categoryText}>Phổ biến</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryButton}>
+              <Text style={styles.categoryText}>Giảm giá</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.categoryButton}>
+              <Text style={styles.categoryText}>Cao cấp</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
 
-        {/* Popular Destinations */}
-        <View style={styles.destinationsContainer}>
-          <View style={styles.titleContainer}>
-            <Ionicons
-              name="map-outline"
-              size={18}
-              color="black"
-              style={styles.icon}
-            />
-
-            <Text style={styles.sectionTitle}>Tuyến phổ biến</Text>
+        {/* Product Grid */}
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.productsContainer}>
+          <View style={styles.productsGrid}>
+            {paddles.map((paddle) => (
+                <TouchableOpacity
+                    key={paddle.id}
+                    style={styles.paddleItem}
+                    onPress={() => navigation.navigate("DetailProduct", { paddle })}
+                >
+                  <View style={styles.paddleImageContainer}>
+                    <Image source={paddle.image} style={styles.paddleImage} />
+                    <TouchableOpacity style={styles.favoriteButton}>
+                      <FontAwesome name="heart-o" size={18} color="#ff4757" />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.paddleInfo}>
+                    <Text style={styles.paddleName}>{paddle.name}</Text>
+                    <Text style={styles.paddlePrice}>{paddle.price}</Text>
+                    <TouchableOpacity style={styles.addButton}>
+                      <Ionicons name="add" size={20} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+            ))}
           </View>
-          <View style={styles.destinationGrid}>
-            <PopularDestinations />
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+
+        {/* Add New Product Button (Only for admin) */}
+        {/*<TouchableOpacity style={styles.floatingButton}>*/}
+        {/*  <Ionicons name="add" size={24} color="#fff" />*/}
+        {/*</TouchableOpacity>*/}
+      </View>
   );
-};
+}
+
+const { width } = Dimensions.get('window');
+const cardWidth = (width - 40) / 2;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f9fa",
+    paddingTop: 40,
   },
-  titleContainer: {
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
-  icon: {
-    marginRight: 8,
+  title: {
+    color: "#333",
+    fontSize: 24,
+    fontWeight: "bold",
   },
-  gradientContainer: {
+  cartButton: {
+    position: "relative",
+  },
+  cartBadge: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: -1,
-  },
-  gradientBackground: {
-    width: "100%",
-  },
-  contentContainer: {
-    flexGrow: 1,
-    paddingBottom: 10,
-  },
-  logoContainer: {
+    top: -5,
+    right: -8,
+    backgroundColor: "#ff4757",
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
   },
-  bannerContainer: {
-    alignSelf: "center",
-    width: 400,
-    height: 200,
-    borderRadius: 15,
-    overflow: "hidden",
-    marginTop: 10,
+  cartBadgeText: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "bold",
   },
   searchContainer: {
-    alignItems: "center",
-    margin: 16,
-    padding: 12,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    elevation: 5,
-    borderWidth: 1,
-    borderColor: "#FFFAF0",
-  },
-  transportContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 16,
+    alignItems: "center",
+    backgroundColor: "#eee",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginHorizontal: 16,
+    marginBottom: 16,
   },
-  destinationsContainer: {
-    padding: 16,
+  searchIcon: {
+    marginRight: 10,
   },
-  sectionTitle: {
-    fontSize: 18,
+  searchInput: {
+    flex: 1,
+    color: "#333",
+  },
+  filterButton: {
+    padding: 4,
+  },
+  categoriesContainer: {
+    paddingLeft: 16,
+    marginBottom: 16,
+  },
+  categoryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    marginRight: 10,
+    borderRadius: 20,
+    backgroundColor: "#eee",
+  },
+  categoryActive: {
+    backgroundColor: "#1e88e5",
+  },
+  categoryText: {
+    color: "#333",
+    fontWeight: "500",
+  },
+  categoryActiveText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  productsContainer: {
+    paddingHorizontal: 16,
+  },
+  productsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+  paddleItem: {
+    width: cardWidth,
+    marginBottom: 20,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    overflow: "hidden",
+  },
+  paddleImageContainer: {
+    width: "100%",
+    height: 170,
+    position: "relative",
+  },
+  paddleImage: {
+    width: "100%",
+    height: "100%",
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  favoriteButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paddleInfo: {
+    padding: 12,
+    position: "relative",
+  },
+  paddleName: {
+    color: "#333",
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 6,
+  },
+  paddlePrice: {
+    color: "#28a745",
+    fontSize: 16,
     fontWeight: "bold",
-    color: "black",
+    marginRight: 36,
+  },
+  addButton: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    backgroundColor: "#1e88e5",
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#ff4757",
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 5,
   },
 });
-
-export default HomeScreen;
